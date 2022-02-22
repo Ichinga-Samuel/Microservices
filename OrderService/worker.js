@@ -1,14 +1,14 @@
 const dotenv = require('dotenv');
-const orders = require('./models/orders')
+const orders = require('./models/orders');
 
-const {connectDB, amq} = require('./connection')
-dotenv.config()
+const {connectDB, amq} = require('./connection');
+dotenv.config();
 
-connectDB().then(() => console.log("database running"))
+connectDB().then(() => console.log("Database Connected"));
 
-const conn = amq().catch(e => console.log(e))
+const conn = amq().catch(e => console.error(e));
 
-const queue = 'createorder'
+const queue = 'createorder';
 const queue2 = 'initiatepayment'
 const queue3 = 'completepayment';
 

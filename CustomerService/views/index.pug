@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  main.container-fluid
+    if alert
+      div(class='alert alert-warning alert-dismissible fade show', role='alert')
+        strong= alert
+        button(class="btn-close" type="button" data-bs-dismiss="alert")
+    
+    h1 Welcome to #{title}
+    script. 
+      async function order(btn){
+        prodId = btn.id.slice(0, -3) // productId
+        cusId = document.getElementById(prodId).value // customer id
+        let amount = btn.getAttribute('data-amount')
+        let data = {amount: amount, productId:prodId, customerId: cusId}
+        let res = await fetch('orders/order', {method: 'POST', body: JSON.stringify(data), headers:{'Accept': 'application/json','Content-Type': 'application/json'}})
+        res = await res.json()
+        alert(res['message'])
+      }
+
+    if products
+      section.container 
+        div.row.row-cols-md-4.row-cols-sm-2
+          each product in products 
+            div(classs="card" style="{max-width: 18rem}")
+              img(class='img-fluid card-img-top bd-highlight', src=product.imageUrl)   
+              div.card-body
+                h3.card-title.text-center= product.name
+                div.d-flex.justify-content-between
+                  p(class="card-link") Price: #{product.amount}
+                  button(class="btn btn-info" data-bs-target=`#order${product.productId}` data-bs-toggle="collapse") Order
+                div(class="collapse" id="order"+product.productId)
+                  h5 Place Order
+                  form(action="")
+                    div.mb-2
+                      h5 Enter Your Details
+                      select(class="form-select" id=product.productId)  
+                        each customer in customers
+                          option(value=customer.customerId) #{customer.name}
+                    button(type="button" class="btn btn-lg btn-info d-block" id=`${product.productId}btn` onclick="order(this)" data-amount=product.amount) Place Order
+
+
+                            
+
+

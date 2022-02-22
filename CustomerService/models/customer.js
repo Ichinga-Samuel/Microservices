@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const {v4: uuid} = require('uuid');
+const {customAlphabet} = require('nanoid');
+
+const nanoid = customAlphabet('1234567890qwertyuioplkjhgfdsazxcvbnmMNBVCXZLKJHGFDSAPOIUYTREWQ', 7);
 
 const CustomerSchema = new mongoose.Schema({
 
@@ -17,12 +19,10 @@ const CustomerSchema = new mongoose.Schema({
 
     customerId: {
         type: String,
-        default: uuid,
+        default: () => nanoid(),
         unique: true
     },
-
     password: String
-
 
 }, {timestamps: true, toObject: {virtuals: true}, toJSON: {virtuals: true}});
 
