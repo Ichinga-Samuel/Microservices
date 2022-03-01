@@ -3,92 +3,65 @@ version: '3.8'
 services:
   customer-service:
     build: ./CustomerService
-    command: npm start
     ports:
       - 3000:3000
-    links:
-      - mongo
-      - rabbit
     networks:
-      - rabbit-net
+      - micronet
     depends_on:
-      - rabbit
-      - product-service
+      - rabbitmq
       - mongo
   
   product-service:
     build: ./ProductService
-    command: npm start
     depends_on:
-      - rabbit
+      - rabbitmq
       - mongo
     networks:
-      - rabbit-net
-    links:
-      - mongo
-      - rabbit
-
-  order-service:
-    build: ./OrderService
-    command: npm start
-    depends_on:
-      - rabbit
-      - mongo
-    networks:
-      - rabbit-net
-    links:
-      - mongo
-      - rabbit
-    
+      - micronet
+  
   payment-service:
     build: ./PaymentService
-    command: npm start
-    networks:
-      - rabbit-net
     depends_on:
-      - rabbit
-    links:
-      - rabbit
+      - rabbitmq
+    networks:
+      - micronet
+  
+  order-service:
+    build: ./OrderService
+    depends_on:
+      - rabbitmq
+      - mongo
+    networks:
+      - micronet
 
   transaction-service:
     build: ./TransactionService
-    command: npm start
-    networks:
-      - rabbit-net
     depends_on:
-      - rabbit
+      - rabbitmq
       - mongo
-    links:
-      - mongo
-      - rabbit
+    networks:
+      - micronet
     
-  rabbit:
-    image: rabbitmq
-    container_name: "rabbit"
+  rabbitmq:
+    image: rabbitmq:3-management
     ports:
       - 5672:5672
+      - 15672:15672
     networks: 
-      - rabbit-net
-    volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/volumes
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - micronet
 
   mongo:
-    image: mongo
-    container_name: "mongo"
+    image: mongo:latest
     ports:
       - 27017:27017
     volumes:
       - mongodb:/data/db
     networks:
-      - rabbit-net
+      - micronet
 
 volumes:
-  mongodb:
+  mongodb: 
 
 networks:
-  rabbit-net:
+  micronet:
     driver: bridge
-
-      
-    

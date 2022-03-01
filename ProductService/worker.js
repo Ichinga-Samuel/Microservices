@@ -12,13 +12,19 @@ queue = 'products';
 queue2 = 'getproducts'
 
 async function getproducts(){
-    return await products.find({}).sort('amount')
+    try{
+        return await products.find({}).sort('amount')
+    }
+    catch(e){
+        console.error(e)
+        return {}
+    }
 }
 
 async function get(){
 
     return conn.then(conn => conn.createChannel()).then(channel => {
-        let prods;
+        let prods = {}
         getproducts().then(res => {prods = res})
         channel.assertQueue(queue, {durable: true}).then(() => channel.sendToQueue(queue, Buffer.from(JSON.stringify(prods)), {persistent: true}))
     })

@@ -11,7 +11,6 @@ async function create(name){
         return await customers.create({name: name, email: `${name}@gmail.com`, password: name})
     }
     catch(e){
-        console.log(e)
         return null
     }
 }

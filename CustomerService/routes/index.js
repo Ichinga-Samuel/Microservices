@@ -25,7 +25,8 @@ conn.then(con => con.createChannel()).then(ch => {
 let products = [];
 conn.then(conn => conn.createChannel()).then(channel => {
   channel.assertQueue(queue1, {durable: true}).then(()=> channel.consume(queue1, msg => {
-      products = JSON.parse(msg.content.toString())
+      products = JSON.parse(msg.content.toString());
+      console.log(products)
       channel.ack(msg)
     }, {noAck: false})
   )

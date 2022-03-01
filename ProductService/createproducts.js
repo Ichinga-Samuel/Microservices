@@ -13,7 +13,7 @@ async function createProduct(name){
         return await products.create({name: name, amount: amount(), })
     }
     catch(e){
-        console.error(e);
+        // console.error(e);
         return null
     }
     

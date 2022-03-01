@@ -3,4 +3,4 @@ WORKDIR /Transactions
 COPY package*.json .
 RUN npm install
 COPY . .
-CMD  npm start
+CMD  ["../wait-for.sh mongo:27017", "npm", "start"]
